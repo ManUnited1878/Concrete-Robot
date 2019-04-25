@@ -72,7 +72,7 @@ def servos():
     # Set frequency to 60hz, good for servos.
       pwm.set_pwm_freq(60)
 
-      print('Moving servo on channels 0-3, press Ctrl-C to quit...')
+      print('Stop servos on channels 0-3, press Ctrl-C to quit...')
       while True:
         # Move servo on channel O between extremes.
         #360=clockwise, 0=counterclockwise
