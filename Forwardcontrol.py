@@ -52,7 +52,7 @@ def servos():
 
 @app.route("/stop",methods=['GET','POST'])
 def servos():
-    clicked=None
+  clicked=None
   if request.method == "POST":
     # Uncomment to enable debug output.
     #import logging
