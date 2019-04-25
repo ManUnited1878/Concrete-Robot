@@ -1,15 +1,16 @@
 # Simple demo of of the PCA9685 PWM servo/LED controller library.
 from __future__ import division
-from flask import Flask
+from flask import Flask, render_template
 import time
 # Import the PCA9685 module.
 import Adafruit_PCA9685
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 
 @app.route("/")
-def hello():
-  return "Hi  World!"
+def root():
+  message = "Hey World"
+  return render_template('index.html',message=message)
 
 
 
