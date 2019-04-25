@@ -1,9 +1,7 @@
-# cs300 Team B
+# Concrete-Robot
 
-[Trello](https://trello.com/b/CwbQSw9w/frupal)
-[Discord Chat Server](https://discord.gg/kvqNDBd)
 
-# git Instructions
+## git Instructions
 
 * ssh into a Linux server
 * Download/clone the repo if you haven't already :
@@ -14,7 +12,7 @@
     
     `git pull`
 
-## Uploading Your Code
+### Uploading Your Code
 
 in the working directory of the project you're working on, do the following
 *  Add the changes you've made.
