@@ -37,6 +37,17 @@
     if( e.keyCode == '40' )
       socket.emit('arrows', 3);
   }
-  document.onkeydown = checkkey 
+  function checkKeyUp(e) {
+    if( e.keyCode == '37' )
+      socket.emit('arrows', 4);
+    if( e.keyCode == '38' )
+      socket.emit('arrows', 5);
+    if( e.keyCode == '39' )
+      socket.emit('arrows', 6);
+    if( e.keyCode == '40' )
+      socket.emit('arrows', 7);
+  }
+  document.onkeydown = checkkey;
+  document.onkeyup = checkKeyUp;
   </script>
 </html>
