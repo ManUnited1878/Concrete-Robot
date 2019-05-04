@@ -27,8 +27,6 @@ def handle_message(message):
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
 
-        print('Moving servos on channels 0-3, press Ctrl-C to quit...')
-        
         # Move servo on channel O between extremes.
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 0, servo_max) #Left Front Drive 
@@ -36,33 +34,15 @@ def handle_message(message):
         pwm.set_pwm(2, 0, servo_max) #Left Rear Drive 
         pwm.set_pwm(3, 360, servo_max) #Right Rear Drive
 
-    #Stop Forward Control      
-    if message==5: 
-        servo_min = 0  # Min pulse length out of 4096
-        servo_max = 600  # Max pulse length out of 4096
-
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-
-        print('Moving servos on channels 0-3, press Ctrl-C to quit...')
-        
-        # Move servo on channel O between extremes.
-        #360=clockwise, 0=counterclockwise
-        pwm.set_pwm(0, 0, servo_min) #Left Front Drive 
-        pwm.set_pwm(1, 0, servo_min) #Right Front Drive
-        pwm.set_pwm(2, 0, servo_min) #Left Rear Drive 
-        pwm.set_pwm(3, 0, servo_min) #Right Rear Drive
+        print('Forward')
 
     #Reverse Control
     if message==3:
         servo_min = 150  # Min pulse length out of 4096
         servo_max = 600  # Max pulse length out of 4096
 
-
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
-
-        print('Moving servo on channels 0-3, press Ctrl-C to quit...')
         
         # Move servo on channel O between extremes.
         #360=clockwise, 0=counterclockwise
@@ -71,23 +51,23 @@ def handle_message(message):
         pwm.set_pwm(2, 360, servo_max) #Left Rear Drive 
         pwm.set_pwm(3, 0, servo_max) #Right Rear Drive
 
+        print('Reverse')
 
-    #Stop Reverse Control      
-    if message==7: 
+    #Stop Forward,Reverse, or Steering movement       
+    if message==4 or message==5 or message==6 or message==7: 
         servo_min = 0  # Min pulse length out of 4096
         servo_max = 600  # Max pulse length out of 4096
 
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
-
-        print('Moving servos on channels 0-3, press Ctrl-C to quit...')
         
-        # Move servo on channel O between extremes.
+        # Move servo between extremes.
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 0, servo_min) #Left Front Drive 
         pwm.set_pwm(1, 0, servo_min) #Right Front Drive
         pwm.set_pwm(2, 0, servo_min) #Left Rear Drive 
         pwm.set_pwm(3, 0, servo_min) #Right Rear Drive
+
 
     return render_template('index.html')
 @app.route("/")
