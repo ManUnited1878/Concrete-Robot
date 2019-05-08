@@ -10,10 +10,18 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
+# Initial Steering Servo Settings
+servo_Home = 400  # Min pulse length out of 4096
+# Set frequency to 60hz, good for servos.
+pwm.set_pwm_freq(60)
+pwm.set_pwm(4, 0, servo_Home) #Left Servo
+pwm.set_pwm(5, 0, servo_Home) #Right Servo
+
 
 #@socketio.on('myevent')
 #def handle_message(message):
 #    print('received message: ' + message)
+
 
 @socketio.on('arrows')
 def handle_message(message):
@@ -27,7 +35,6 @@ def handle_message(message):
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
 
-        # Move servo on channel O between extremes.
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 0, servo_max) #Left Front Drive 
         pwm.set_pwm(1, 360, servo_max) #Right Front Drive
@@ -44,7 +51,6 @@ def handle_message(message):
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
         
-        # Move servo on channel O between extremes.
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 360, servo_max) #Left Front Drive 
         pwm.set_pwm(1, 0, servo_max) #Right Front Drive
@@ -53,21 +59,49 @@ def handle_message(message):
 
         print('Reverse')
 
+    #Left Steering
+    if message==0:
+        servo_Dir1 = 375  # Min pulse length out of 4096
+        servo_Dir2 = 525  # Max pulse length out of 4096
+      # Set frequency to 60hz, good for servos.
+        pwm.set_pwm_freq(60)
+        
+        #360=clockwise, 0=counterclockwise
+        pwm.set_pwm(4, 0, servo_Dir1) #Left Servo
+        pwm.set_pwm(5, 0, servo_Dir2) #Right Servo
+       
+        print('Left Steering')
+
+    #Right Steering
+    if message==0:
+        servo_Dir1 = 375  # Min pulse length out of 4096
+        servo_Dir2 = 525  # Max pulse length out of 4096
+      # Set frequency to 60hz, good for servos.
+        pwm.set_pwm_freq(60)
+        
+        #360=clockwise, 0=counterclockwise
+        pwm.set_pwm(4, 0, servo_Dir2) #Left Servo
+        pwm.set_pwm(5, 0, servo_Dir1) #Right Servo
+       
+        print('Right Steering')
+
+
     #Stop Forward,Reverse, or Steering movement       
     if message==4 or message==5 or message==6 or message==7: 
         servo_min = 0  # Min pulse length out of 4096
-        servo_max = 600  # Max pulse length out of 4096
+        servo_Home = 400  # Min pulse length out of 4096
 
       # Set frequency to 60hz, good for servos.
         pwm.set_pwm_freq(60)
         
-        # Move servo between extremes.
-        #360=clockwise, 0=counterclockwise
+        # Stop Drive Servos
         pwm.set_pwm(0, 0, servo_min) #Left Front Drive 
         pwm.set_pwm(1, 0, servo_min) #Right Front Drive
         pwm.set_pwm(2, 0, servo_min) #Left Rear Drive 
         pwm.set_pwm(3, 0, servo_min) #Right Rear Drive
-
+        #Return Steering Servos to original position
+        pwm.set_pwm(4, 0, servo_Home) #Left Servo
+        pwm.set_pwm(5, 0, servo_Home) #Right Servo
 
     return render_template('index.html')
 @app.route("/")
