@@ -29,7 +29,7 @@ print('Moving servo on channel 4, press Ctrl-C to quit...')
 while True:
     # Move servo on channel O between extremes.
     #360=clockwise, 0=counterclockwise
-    pwm.set_pwm(4, 180, servo_max) #Front ESC
+    pwm.set_pwm(9, 180, servo_max) #Front ESC
     time.sleep(1)
    
 

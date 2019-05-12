@@ -1,13 +1,8 @@
-# #Create Folder: 
-# mkdir ~/distance_sensor/
-# cd ~/distance_sensor
-# nano distance_sensor.py
-
-#Code: 
-
-#!/usr/bin/python
 import RPi.GPIO as GPIO
 import time
+import Adafruit_PCA9685
+
+pwm = Adafruit_PCA9685.PCA9685()
 
 try:
       GPIO.setmode(GPIO.BOARD)
@@ -20,11 +15,11 @@ try:
 
       GPIO.output(PIN_TRIGGER, GPIO.LOW)
 
-      print "Waiting for sensor to settle"
+      print("Waiting for sensor to settle")
 
       time.sleep(2)
 
-      print "Calculating distance"
+      print("Calculating distance")
 
       GPIO.output(PIN_TRIGGER, GPIO.HIGH)
 
@@ -43,3 +38,14 @@ try:
 
 finally:
       GPIO.cleanup()
+
+#Activate Bending Servo
+if distance<=4:
+    servo_min = 150  # Min pulse length out of 4096
+    servo_max = 600  # Max pulse length out of 4096
+
+    # Set frequency to 60hz, good for servos.
+    pwm.set_pwm_freq(60)
+
+    #360=clockwise, 0=counterclockwise
+    pwm.set_pwm(0, 0, servo_max) #Chassis Bending Servo 
