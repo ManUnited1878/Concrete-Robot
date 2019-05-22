@@ -38,8 +38,15 @@
       socket.emit('arrows', 2);
     if( e.keyCode == '40' )
       socket.emit('arrows', 3);
+   
     if( e.keyCode == '81' )
       socket.emit('arrows', 8);
+    if( e.keyCode == '87' )
+      socket.emit('arrows', 9);
+    if( e.keyCode == '69' )
+      socket.emit('arrows', 10);
+    
+ 
   }
   function checkKeyUp(e) {
     if( e.keyCode == '37' )
@@ -54,6 +61,5 @@
 
   document.onkeydown = checkkey;
   document.onkeyup = checkKeyUp;
-  document.onkeydown = ESC;
   </script>
 </html>

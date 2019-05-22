@@ -10,6 +10,8 @@ os.system ("sudo pigpiod") #Launching GPIO library
 time.sleep(1) # As i said it is too impatient and so if this delay is removed you will get an error
 import pigpio #importing GPIO library
 
+import picamera
+
 pwm = Adafruit_PCA9685.PCA9685()
 
 #ESC Variables
@@ -22,15 +24,19 @@ max_value = 2000 #change this if your ESC's max value is different
 min_value = 700  #change this if your ESC's min value is different 
 
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-# Initial Steering Servo Settings
-servo_Home = 400  # Min pulse length out of 4096
+# Initial Servo Settings
+servo_min = 0  # Min pulse length out of 4096
+servo_max = 600  # Max pulse length out of 4096
+servo_Home = 350  # Min pulse length out of 4096
+
 # Set frequency to 60hz, good for servos.
 pwm.set_pwm_freq(60)
+
+#Neutral Steering Servo Settings
 pwm.set_pwm(4, 0, servo_Home) #Left Servo
 pwm.set_pwm(5, 0, servo_Home) #Right Servo
 
@@ -43,83 +49,66 @@ pwm.set_pwm(5, 0, servo_Home) #Right Servo
 @socketio.on('arrows')
 def handle_message(message):
     print('received message: ' + str(message))
-    
+
     #Forward Control
     if message==1:
-        servo_min = 150  # Min pulse length out of 4096
-        servo_max = 600  # Max pulse length out of 4096
-
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 0, servo_max) #Left Front Drive 
         pwm.set_pwm(1, 360, servo_max) #Right Front Drive
         pwm.set_pwm(2, 0, servo_max) #Left Rear Drive 
         pwm.set_pwm(3, 360, servo_max) #Right Rear Drive
-
         print('Forward')
+    elif message==5:         # Stop Drive Servos
+        pwm.set_pwm(0, 0, servo_min) #Left Front Drive 
+        pwm.set_pwm(1, 0, servo_min) #Right Front Drive
+        pwm.set_pwm(2, 0, servo_min) #Left Rear Drive 
+        pwm.set_pwm(3, 0, servo_min) #Right Rear Drive
 
     #Reverse Control
     if message==3:
-        servo_min = 150  # Min pulse length out of 4096
-        servo_max = 600  # Max pulse length out of 4096
-
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-        
         #360=clockwise, 0=counterclockwise
         pwm.set_pwm(0, 360, servo_max) #Left Front Drive 
         pwm.set_pwm(1, 0, servo_max) #Right Front Drive
         pwm.set_pwm(2, 360, servo_max) #Left Rear Drive 
         pwm.set_pwm(3, 0, servo_max) #Right Rear Drive
-
         print('Reverse')
-
-    #Left Steering
-    if message==0:
-        servo_Dir1 = 375  # Min pulse length out of 4096
-        servo_Dir2 = 525  # Max pulse length out of 4096
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-        
-        #360=clockwise, 0=counterclockwise
-        pwm.set_pwm(4, 0, servo_Dir1) #Left Servo
-        pwm.set_pwm(5, 0, servo_Dir2) #Right Servo
-       
-        print('Left Steering')
-
-    #Right Steering
-    if message==0:
-        servo_Dir1 = 375  # Min pulse length out of 4096
-        servo_Dir2 = 525  # Max pulse length out of 4096
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-        
-        #360=clockwise, 0=counterclockwise
-        pwm.set_pwm(4, 0, servo_Dir2) #Left Servo
-        pwm.set_pwm(5, 0, servo_Dir1) #Right Servo
-       
-        print('Right Steering')
-
-
-    #Stop Forward,Reverse, or Steering movement       
-    if message==4 or message==5 or message==6 or message==7: 
-        servo_min = 0  # Min pulse length out of 4096
-        servo_Home = 400  # Min pulse length out of 4096
-
-      # Set frequency to 60hz, good for servos.
-        pwm.set_pwm_freq(60)
-        
-        # Stop Drive Servos
+    elif message==7:        # Stop Drive Servos
         pwm.set_pwm(0, 0, servo_min) #Left Front Drive 
         pwm.set_pwm(1, 0, servo_min) #Right Front Drive
         pwm.set_pwm(2, 0, servo_min) #Left Rear Drive 
         pwm.set_pwm(3, 0, servo_min) #Right Rear Drive
+
+    #Left Steering
+    if message==0:
+        servo_Dir1 = 250  # Min pulse length out of 4096
+        servo_Dir2 = 450  # Max pulse length out of 4096
+        pwm.set_pwm(4, 0, servo_Dir1) #Right Servo
+        pwm.set_pwm(5, 0, servo_Dir2) #Left Servo
+        print('Left Steering')
+
+    #Right Steering
+    if message==2:
+        servo_Dir1 = 250  # Min pulse length out of 4096 375
+        servo_Dir2 = 450  # Max pulse length out of 4096 525
+        pwm.set_pwm(4, 0, servo_Dir2) #Right Servo
+        pwm.set_pwm(5, 0, servo_Dir1) #Left Servo   
+        print('Right Steering')
+
+    #Stop Forward,Reverse, or Steering movement       
+    elif message==4 or message==6:      
         #Return Steering Servos to original position
         pwm.set_pwm(4, 0, servo_Home) #Left Servo
         pwm.set_pwm(5, 0, servo_Home) #Right Servo
 
+    #Camera - Photo Capture
+    if message==9:
+        print('Camera')
+        camera = picamera.PiCamera()
+        camera.capture('example.jpg')
+        camera.vflip = True
+        camera.capture('example2.jpg')
+
+    #ESC Activation    
     if message==8:
         print('ESC ON')
         print "control OR stop"
@@ -167,10 +156,7 @@ def handle_message(message):
         else :
             print "Restart program"
 
-      
-@socketio.on('ESC')
-def handle_message(message):
-    print('received message: ' + str(message))
+
     
     return render_template('index.html')
 @app.route("/")
