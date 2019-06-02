@@ -12,6 +12,17 @@ import picamera #Import camera module
 
 pwm = Adafruit_PCA9685.PCA9685()
 
+#Import DxlChain
+from dxl.dxlchain import DxlChain 
+
+# Open the serial device
+chain=DxlChain("/dev/ttyUSB0",rate=1000000)
+
+# Load all the motors and obtain the list of IDs
+motors=chain.get_motor_list() # Discover all motors on the chain and return their IDs
+Motor1=1
+Motor2=2
+
 #ESC Variables
 ESC1=4  #Connect the Propeller ESC in this GPIO pin 
 ESC2=18  #Connect the DC Motor ESC in this GPIO pin 
@@ -50,25 +61,21 @@ def handle_message(message):
 
     #Forward Control
     if message==1:
-        speed = 1700 
-        pi.set_servo_pulsewidth(ESC1, speed)
-        pi.set_servo_pulsewidth(ESC2, speed)
-        print('Forward')
+        chain.goto(Motor1,10,speed=1523,blocking=False) #500 for CW, 1523 for CCW
+        chain.goto(Motor2,10,speed=500,blocking=False) 
+        print('forward')
     elif message==5:         # Stop Drive Servos
-        speed = 0
-        pi.set_servo_pulsewidth(ESC1, speed)
-        pi.set_servo_pulsewidth(ESC2, speed)
+        chain.goto(Motor1,10,speed=0,blocking=False) 
+        chain.goto(Motor2,10,speed=0,blocking=False) 
   
     #Reverse Control
     if message==3:
-        speed = 1300 
-        pi.set_servo_pulsewidth(ESC1, speed)
-        pi.set_servo_pulsewidth(ESC2, speed)
+        chain.goto(Motor1,10,speed=500,blocking=False) 
+        chain.goto(Motor2,10,speed=1523,blocking=False) 
         print('Reverse')
     elif message==7:        # Stop Drive Servos
-        speed = 0
-        pi.set_servo_pulsewidth(ESC1, speed)
-        pi.set_servo_pulsewidth(ESC2, speed)
+        chain.goto(Motor1,10,speed=0,blocking=False) 
+        chain.goto(Motor2,10,speed=0,blocking=False) 
  
     #Left Steering
     if message==0:

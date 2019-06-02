@@ -3,7 +3,7 @@ import time   #importing time library to make Rpi wait because its too impatient
 os.system ("sudo pigpiod") #Launching GPIO library
 import pigpio #importing GPIO library
 
-ESC=18  #Connect the ESC in this GPIO pin 
+ESC=4  #Connect the ESC in this GPIO pin 
 
 pi = pigpio.pi();
 pi.set_servo_pulsewidth(ESC, 0) 
@@ -13,14 +13,6 @@ min_value = 700  #change this if your ESC's min value is different
 
 print "Connect the battery and press Enter"
 inp = raw_input()    
-if inp == '':
-    pi.set_servo_pulsewidth(ESC, 0)
-    time.sleep(1)
-    pi.set_servo_pulsewidth(ESC, max_value)
-    time.sleep(1)
-    pi.set_servo_pulsewidth(ESC, min_value)
-    time.sleep(1)
-
 speed = 1500    # change your speed if you want to.... it should be between 700 - 2000
 print "Controls - a to decrease speed & d to increase speed OR q to decrease a lot of speed & e to increase a lot of speed"
 while True:

@@ -116,31 +116,31 @@ def handle_message(message):
         def control(): 
             print "Starting motor. If not calibrated and armed, restart by giving 'x'"
             time.sleep(1)
-            speed = 1600  #1500  # change your speed if you want to.... it should be between 700 - 2000
+            speed = 1500  #1500  # change your speed if you want to.... it should be between 700 - 2000
             print "Controls - a to decrease speed & d to increase speed OR q to decrease a lot of speed & e to increase a lot of speed"
             while True:
                 pi.set_servo_pulsewidth(ESC, speed)
-                # inp = raw_input()
-                # if inp == "q":
-                #     speed -= 100    # decrementing the speed 
-                #     print "speed = %d" % speed
-                # elif inp == "e":    
-                #     speed += 100    # incrementing the speed 
-                #     print "speed = %d" % speed
-                # elif inp == "d":
-                #     speed += 10     # incrementing the speed 
-                #     print "speed = %d" % speed
-                # elif inp == "a":
-                #     speed -= 10     # decrementing the speed
-                #     print "speed = %d" % speed
-                # elif inp == "stop":
-                #     stop()          #going for the stop function
-                #     break
-                # elif inp == "arm":
-                #     arm()
-                #     break	
-                # else:
-                #     print "Press a,q,d or e"
+                inp = raw_input()
+                if inp == "q":
+                    speed -= 100    # decrementing the speed 
+                    print "speed = %d" % speed
+                elif inp == "e":    
+                    speed += 100    # incrementing the speed 
+                    print "speed = %d" % speed
+                elif inp == "d":
+                    speed += 10     # incrementing the speed 
+                    print "speed = %d" % speed
+                elif inp == "a":
+                    speed -= 10     # decrementing the speed
+                    print "speed = %d" % speed
+                elif inp == "stop":
+                    stop()          #going for the stop function
+                    break
+                elif inp == "arm":
+                    arm()
+                    break	
+                else:
+                    print "Press a,q,d or e"
                     
                 
         def stop(): #This will stop every action your Pi is performing for ESC ofcourse.
